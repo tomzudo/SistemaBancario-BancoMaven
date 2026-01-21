@@ -1,0 +1,12 @@
+# Maven
+target/
+
+# IDEs
+.idea/
+.vscode/
+
+# Banco de dados local
+*.db
+
+# Logs
+*.log
