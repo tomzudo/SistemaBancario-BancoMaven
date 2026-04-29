@@ -17,7 +17,7 @@ public class Database {
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "nome TEXT NOT NULL,"
             + "saldo REAL NOT NULL,"
-            + "tipo TEXT NOT NULL" // corrente ou poupanca
+            + "tipo TEXT NOT NULL"
             + ");";
         stmt.execute(sql);
     

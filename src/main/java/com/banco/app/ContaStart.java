@@ -19,25 +19,28 @@ public class ContaStart {
 
         int op = 0;
         while (true) {
+        System.out.println("\n");
         System.out.println("1 - Criar conta");
         System.out.println("2 - Listar contas");
         System.out.println("3 - Buscar por id");
         System.out.println("4 - Depositar");
         System.out.println("5 - Sacar");
         System.out.println("6 - Tranferencia");
+        System.out.println("7 - Excluir conta");
         System.out.println("0 - Sair");
+        System.out.println("-------------------------");
         System.out.print("Opção: ");
 
         try{
             op = Integer.parseInt(sc.nextLine());
         }catch(NumberFormatException e){
-            System.out.println("Digite uma entrada valida, somente numeros sao aceitos");
+            System.out.println("Erro: " + e.getMessage());
             continue;
         }
         
             if (op == 1) {
                 System.out.print("Nome: ");
-                String nome = sc.next();
+                String nome = sc.nextLine();
 
                 System.out.print("Saldo inicial: ");
                 double saldo = sc.nextDouble();
@@ -47,6 +50,7 @@ public class ContaStart {
 
                 service.criarConta(nome, saldo, tipo);
                 System.out.println("Conta criada com sucesso.");
+                sc.nextLine();
             }
             else if (op == 2) {
                 System.out.println("Contas cadastradas:");
@@ -127,23 +131,23 @@ public class ContaStart {
                         System.out.println("Digite o valor do saque que deseja efetuar");
                         double valor = sc.nextDouble();
 
-                        sc.nextLine();
+                        sc.next();
 
                         service.sacar(id, valor);
-                        System.out.println("Deposito realizado com sucesso");
+                        System.out.println("Saque realizado com sucesso");
                     }else{
                         System.out.println("Transacao invalidada");
                     }
                 }catch(RuntimeException e){
                     System.out.println("Erro" + e.getMessage());
                 }
+            sc.nextLine();
             }
+            
 
             else if(op == 6){
-                System.out.println("Digite o id da conta que deseja tranferir");
+                System.out.println("Digite o id da conta titular que deseja tranferir");
                 int idTitular = sc.nextInt();
-
-                sc.nextLine();
 
                 try{
                     ContaBancaria conta = service.BuscarPorId(idTitular);
@@ -156,6 +160,7 @@ public class ContaStart {
                     
                     System.out.println("Digite o id da conta destino da tranferencia");
                     int idDestino = sc.nextInt();
+
                     ContaBancaria contaDestino = service.BuscarPorId(idDestino);
 
                     if(contaDestino == null){
@@ -169,10 +174,11 @@ public class ContaStart {
 
                     System.out.println("Confirmar transacao (sim)S / N (nao)");
                     String confirmacao = sc.nextLine();
-
+                                        
                     if(confirmacao.equalsIgnoreCase("S")){
                         System.out.println("Digite o valor da tranferencia");
                         double valor = sc.nextDouble();
+                        sc.nextLine();
 
                         service.tranferencia(idTitular, idDestino, valor);
 
@@ -185,6 +191,13 @@ public class ContaStart {
                 } catch (RuntimeException e) {
                     System.out.println("Erro: " + e.getMessage());
                 }
+            }
+
+            else if(op == 7){
+                System.out.println("Escreva o id da conta que deseja excluir");
+                int id = sc.nextInt();
+
+                service.apagarConta(id);
             }
 
             else if (op == 0) {

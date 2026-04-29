@@ -44,6 +44,10 @@ public class ContaService {
         ContaBancaria contaDestino = dao.buscarPorId(id_ContaDestino);
 
         dao.atualizarSaldo(id_contaOrigem, contaOrigem.getSaldo() - valor);
-        dao.atualizarSaldo(id_ContaDestino, contaOrigem.getSaldo() - valor);
+        dao.atualizarSaldo(id_ContaDestino, contaDestino.getSaldo() + valor);
+    }
+
+    public void apagarConta(int id){
+        dao.excluirConta(id);
     }
 }

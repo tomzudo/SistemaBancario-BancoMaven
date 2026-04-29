@@ -32,6 +32,56 @@ public class ContaDAO {
         }
     }
 
+    
+    public List<ContaBancaria> listar() {
+        List<ContaBancaria> lista = new ArrayList<>();
+        String sql = "SELECT * FROM contas";
+        
+        try (Connection conn = SQLiteConnection.conectar();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()) {
+            
+            while(rs.next()) {
+                String tipo = rs.getString("tipo");
+                ContaBancaria conta;
+                
+                if (tipo.equals("corrente")) {
+                    conta = new ContaCorrente(rs.getString("nome"), rs.getDouble("saldo"));
+                } else {
+                    conta = new ContaPoupanca(rs.getString("nome"), rs.getDouble("saldo"));
+                }
+                
+                conta.setId(rs.getInt("id"));
+                lista.add(conta);
+            }
+            
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar contas", e);
+        }
+        
+        return lista;
+    }
+    
+    public void atualizarSaldo(int id, double novoSaldo) {
+        String sql = "UPDATE contas SET saldo = ? WHERE id = ?";
+        
+        try (Connection conn = SQLiteConnection.conectar();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDouble(1, novoSaldo);
+            stmt.setInt(2, id);
+
+            int linhas = stmt.executeUpdate();
+
+            if (linhas == 0) {
+                throw new RuntimeException("Conta não encontrada para atualização.");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar saldo", e);
+        }
+    }
+
     public ContaBancaria buscarPorId(int id){
         String sql = "SELECT * FROM contas WHERE id = ?";
         try (Connection conn = SQLiteConnection.conectar();
@@ -62,53 +112,24 @@ public class ContaDAO {
 
         return null;
     }
-    
-    public List<ContaBancaria> listar() {
-        List<ContaBancaria> lista = new ArrayList<>();
-        String sql = "SELECT * FROM contas";
 
-        try (Connection conn = SQLiteConnection.conectar();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
+    public void excluirConta(int id){
+        String sql = "DELETE FROM contas WHERE id = ?";
 
-            while(rs.next()) {
-                String tipo = rs.getString("tipo");
-                ContaBancaria conta;
-
-                if (tipo.equals("corrente")) {
-                    conta = new ContaCorrente(rs.getString("nome"), rs.getDouble("saldo"));
-                } else {
-                    conta = new ContaPoupanca(rs.getString("nome"), rs.getDouble("saldo"));
-                }
-
-                conta.setId(rs.getInt("id"));
-                lista.add(conta);
-                }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar contas", e);
-        }
-
-        return lista;
-    }
-
-    public void atualizarSaldo(int id, double novoSaldo) {
-        String sql = "UPDATE contas SET saldo = ? WHERE id = ?";
-
-        try (Connection conn = SQLiteConnection.conectar();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        try(Connection conn = SQLiteConnection.conectar();
+            PreparedStatement stmt = conn.prepareStatement(sql)){
+            
             stmt.setInt(1, id);
-            stmt.setDouble(2, novoSaldo);
+            int linhasAfetadas = stmt.executeUpdate();
 
-            int linhas = stmt.executeUpdate();
-
-            if (linhas == 0) {
-                throw new RuntimeException("Conta não encontrada para atualização.");
+            if(linhasAfetadas > 0){
+                System.out.println("Usuário com id " + id + " excluido com sucesso" );
+            }else{
+                System.out.println("Não foi encontrado nenhum usuario com id digitado");
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar saldo", e);
-        }
+                
+        }catch(SQLException e){
+            e.printStackTrace();
+        } 
     }
 }
