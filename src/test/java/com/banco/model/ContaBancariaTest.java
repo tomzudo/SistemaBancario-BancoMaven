@@ -1,5 +1,9 @@
 package com.banco.model;
+import com.banco.model.ContaBancaria;
 
-public class ContaBancariaTest {
-    
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class ContaBancariaTest {
+
 }

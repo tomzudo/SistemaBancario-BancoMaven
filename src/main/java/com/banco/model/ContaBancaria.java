@@ -23,7 +23,10 @@ public abstract class ContaBancaria {
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        if (nome == null || nome.isEmpty()) {
+            throw new IllegalArgumentException("Nome de titular invalido");
+        }
+        this.nome = formatar(nome);
     }
 
     public double getSaldo() {
@@ -31,6 +34,7 @@ public abstract class ContaBancaria {
     }
 
     public void setSaldo(double saldo) {
+        validarSaldoPositivo(saldo);
         this.saldo = saldo;
     }
 
